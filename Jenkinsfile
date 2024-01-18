@@ -47,7 +47,10 @@ node {
 
 
         //create scratch org
-        stage('Create Test Scratch Org') {
+        
+    }
+
+    stage('Create Test Scratch Org') {
             rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias org1 --wait 10 --duration-days 1"
 
             println('rmsg : ' + rmsg)
@@ -67,5 +70,4 @@ node {
             error 'Salesforce push to test scratch org failed.'
             }
         }
-    }
 }
