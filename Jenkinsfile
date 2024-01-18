@@ -57,7 +57,7 @@ node {
         // Deploy code to scratch org
 
         stage('Push To Test Scratch Org') {
-            rc = command "${toolbelt}/sf project deploy start --target-org org1"
+            rc = command "sf project deploy start --target-org org1"
             if (rc != 0) {
             error 'Salesforce push to test scratch org failed.'
             }
