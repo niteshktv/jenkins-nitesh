@@ -47,11 +47,8 @@ node {
 
 
         //create scratch org
-        
-    }
-
-    stage('Create Test Scratch Org') {
-            rmsg = bat returnStdout: true, script: "sfdx force:org:create -f --target-dev-hub ${HUB_ORG} --set-default --definition-file config/project-scratch-def.json --alias org1  --duration-days 1"
+        stage('Create Test Scratch Org') {
+            rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias org1 --wait 10 --duration-days 1"
 
             println('rmsg : ' + rmsg)
             
@@ -65,12 +62,10 @@ node {
         // Deploy code to scratch org
 
         stage('Push To Test Scratch Org') {
-            rmsg1 = bat returnStdout: true, script: "sf project deploy start --target-org org1"
-            println('rmsg : ' + rmsg1)
+            rmsg1 = command "sf project deploy start --target-org org1"
             if (rmsg1 != 0) {
             error 'Salesforce push to test scratch org failed.'
             }
-
-            println('rmsg : ' + rmsg1)
         }
+    }
 }
