@@ -25,24 +25,42 @@ node {
     withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
         stage('Deploye Code') {
             if (isUnix()) {
-                rc = sh returnStatus: true, script: "sfdx force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
+                rc = sh returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --user-name ${HUB_ORG} --jwt-key-file ${jwt_key_file} --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias HubOrg"
             }else{
-                 rc = bat returnStatus: true, script: "sfdx force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
+                 rc = bat returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --user-name ${HUB_ORG} --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias HubOrg"
             }
             if (rc != 0) { error 'hub org authorization failed' }
 
 			println rc
 			
 			// need to pull out assigned username
-			if (isUnix()) {
-				rmsg = sh returnStdout: true, script: "sfdx force:source:deploy --manifest manifest/package.xml -u ${HUB_ORG}"
-			}else{
-			   rmsg = bat returnStdout: true, script: "sfdx force:source:deploy --manifest manifest/package.xml -u ${HUB_ORG}"
-			}
+			// if (isUnix()) {
+			// 	rmsg = sh returnStdout: true, script: "sfdx force:source:deploy --manifest manifest/package.xml -u ${HUB_ORG}"
+			// }else{
+			//    rmsg = bat returnStdout: true, script: "sfdx force:source:deploy --manifest manifest/package.xml -u ${HUB_ORG}"
+			// }
 			  
-            printf rmsg
-            println('Hello from a Job DSL script!')
-            println(rmsg)
+            // printf rmsg
+            // println('Hello from a Job DSL script!')
+            // println(rmsg)
+        }
+
+
+        //create scratch org
+        stage('Create Test Scratch Org') {
+            rc = command "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias org1 --wait 10 --duration-days 1"
+            if (rc != 0) {
+                error 'Salesforce test scratch org creation failed.'
+            }
+        }
+
+        // Deploy code to scratch org
+
+        stage('Push To Test Scratch Org') {
+            rc = command "${toolbelt}/sf project deploy start --target-org org1"
+            if (rc != 0) {
+            error 'Salesforce push to test scratch org failed.'
+            }
         }
     }
 }
