@@ -65,9 +65,12 @@ node {
         // Deploy code to scratch org
 
         stage('Push To Test Scratch Org') {
-            rmsg1 = command "sf project deploy start --target-org org1"
+            rmsg1 = bat returnStdout: true, script: "sf project deploy start --target-org org1"
+            println('rmsg : ' + rmsg1)
             if (rmsg1 != 0) {
             error 'Salesforce push to test scratch org failed.'
             }
+
+            println('rmsg : ' + rmsg1)
         }
 }
