@@ -49,9 +49,9 @@ node {
         //create scratch org
         stage('Create Test Scratch Org') {
             if(isUnix()){
-                rmsg = sh returnStdout: true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias org1 --wait 10 --duration-days 1"
+                rmsg = sh returnStdout: true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias org2 --wait 10 --duration-days 1"
             }else{
-                rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias org1 --wait 10 --duration-days 1"
+                rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias org2 --wait 10 --duration-days 1"
             }
 
             println('rmsg : ' + rmsg)
@@ -67,11 +67,11 @@ node {
 
         stage('Push To Test Scratch Org') {
             if(isUnix()){
-                rmsg1 = sh returnStdout: true, script: "sf project deploy start --target-org org1";
+                rmsg1 = sh returnStdout: true, script: "sf project deploy start --target-org org2";
             }else{
-                rmsg1 = bat returnStdout: true, script: "sf project deploy start --target-org org1"
+                rmsg1 = bat returnStdout: true, script: "sf project deploy start --target-org org2"
             }
-            
+
             if (rmsg1 != 0) {
             error 'Salesforce push to test scratch org failed.'
             }
