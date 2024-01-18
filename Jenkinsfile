@@ -53,7 +53,7 @@ node {
                 error 'Salesforce test scratch org creation failed.'
             }
 
-            println rmsg
+            println('rmsg : ' + rmsg)
         }
 
         // Deploy code to scratch org
