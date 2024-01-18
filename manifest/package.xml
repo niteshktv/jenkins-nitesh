@@ -8,5 +8,8 @@
 		<members>*</members>
 		<name>ApexPage</name>
 	</types>
+		<members>*</members>
+		<name>LightningComponentBundle</name>
+	</types>
 	<version>52.0</version>
 </Package>
