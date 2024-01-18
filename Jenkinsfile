@@ -52,6 +52,8 @@ node {
             if (rmsg != 0) {
                 error 'Salesforce test scratch org creation failed.'
             }
+
+            println rmsg
         }
 
         // Deploy code to scratch org
