@@ -6,10 +6,10 @@ node {
     def RUN_ARTIFACT_DIR="tests/${BUILD_NUMBER}"
     def SFDC_USERNAME
 
-    def HUB_ORG=env.HUB_ORG_DH
+    def HUB_ORG=scratch-org-deployment@nitesh.com
     def SFDC_HOST = env.SFDC_HOST_DH
-    def JWT_KEY_CRED_ID = env.JWT_CRED_ID_DH
-    def CONNECTED_APP_CONSUMER_KEY=env.CONNECTED_APP_CONSUMER_KEY_DH
+    def JWT_KEY_CRED_ID = 7c5cdea4-b910-4859-b0da-e039bc7fab37
+    def CONNECTED_APP_CONSUMER_KEY= 3MVG9fe4g9fhX0E5xqfJwdzZIDiO5NKKRX8X3iBVs_ioaFuWieqPs3NIJeOPK9eJY.Gc6v5i8Pfa1saPf7lke 
 
     println 'KEY IS' 
     println JWT_KEY_CRED_ID
