@@ -25,9 +25,9 @@ node {
     withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
         stage('Deploye Code') {
             if (isUnix()) {
-                rc = sh returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file ${jwt_key_file} --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias devorg"
+                rc = sh returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file ${jwt_key_file} --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias myDevorg"
             }else{
-                 rc = bat returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias devorg"
+                 rc = bat returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias myDevorg"
             }
             if (rc != 0) { error 'hub org authorization failed' }
 
@@ -49,9 +49,9 @@ node {
         //create scratch org
         stage('Create Test Scratch Org') {
             if(isUnix()){
-                rmsg = sh returnStdout: true, script: "sf org create scratch --target-dev-hub devorg --set-default --definition-file config/project-scratch-def.json --alias org4 --wait 10 --duration-days 1"
+                rmsg = sh returnStdout: true, script: "sf org create scratch --target-dev-hub myDevorg --set-default --definition-file config/project-scratch-def.json --alias org4 --wait 10 --duration-days 1"
             }else{
-                rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub devorg --set-default --definition-file config/project-scratch-def.json --alias org4 --wait 10 --duration-days 1"
+                rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub myDevorg --set-default --definition-file config/project-scratch-def.json --alias org4 --wait 10 --duration-days 1"
             }
 
             println('rmsg : ' + rmsg)
