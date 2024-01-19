@@ -25,9 +25,9 @@ node {
     withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
         stage('Deploye Code') {
             if (isUnix()) {
-                rc = sh returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file ${jwt_key_file} --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias jenkins-dev-hub"
+                rc = sh returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file ${jwt_key_file} --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias myDevorg"
             }else{
-                 rc = bat returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias jenkins-dev-hub"
+                 rc = bat returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias myDevorg"
             }
             if (rc != 0) { error 'hub org authorization failed' }
 
@@ -49,9 +49,9 @@ node {
         //create scratch org
         stage('Create Test Scratch Org') {
             if(isUnix()){
-                rmsg = sh returnStdout: true, script: "sf org create scratch --target-dev-hub jenkins-dev-hub --set-default --definition-file config/project-scratch-def.json --alias org3 --wait 10 --duration-days 1"
+                rmsg = sh returnStdout: true, script: "sf org create scratch --target-dev-hub myDevorg --set-default --definition-file config/project-scratch-def.json --alias org4 --wait 10 --duration-days 1"
             }else{
-                rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub jenkins-dev-hub --set-default --definition-file config/project-scratch-def.json --alias org3 --wait 10 --duration-days 1"
+                rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub myDevorg --set-default --definition-file config/project-scratch-def.json --alias org4 --wait 10 --duration-days 1"
             }
 
             println('rmsg : ' + rmsg)
@@ -67,9 +67,9 @@ node {
 
         stage('Push To Test Scratch Org') {
             if(isUnix()){
-                rmsg1 = sh returnStdout: true, script: "sf project deploy start --target-org org3";
+                rmsg1 = sh returnStdout: true, script: "sf project deploy start --target-org org4";
             }else{
-                rmsg1 = bat returnStdout: true, script: "sf project deploy start --target-org org3"
+                rmsg1 = bat returnStdout: true, script: "sf project deploy start --target-org org4"
             }
 
             if (rmsg1 != 0) {
