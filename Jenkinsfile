@@ -6,10 +6,10 @@ node {
     def RUN_ARTIFACT_DIR="tests/${BUILD_NUMBER}"
     def SFDC_USERNAME
 
-    def HUB_ORG=scratch-org-deployment@nitesh.com
+    def HUB_ORG=env.HUB_ORG_DH
     def SFDC_HOST = env.SFDC_HOST_DH
-    def JWT_KEY_CRED_ID = 7c5cdea4-b910-4859-b0da-e039bc7fab37
-    def CONNECTED_APP_CONSUMER_KEY= 3MVG9fe4g9fhX0E5xqfJwdzZIDiO5NKKRX8X3iBVs_ioaFuWieqPs3NIJeOPK9eJY.Gc6v5i8Pfa1saPf7lke 
+    def JWT_KEY_CRED_ID = env.JWT_CRED_ID_DH
+    def CONNECTED_APP_CONSUMER_KEY=env.CONNECTED_APP_CONSUMER_KEY_DH
 
     println 'KEY IS' 
     println JWT_KEY_CRED_ID
@@ -25,9 +25,9 @@ node {
     withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
         stage('Deploye Code') {
             if (isUnix()) {
-                rc = sh returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file ${jwt_key_file} --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias scratch-org-dev-hub2"
+                rc = sh returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file ${jwt_key_file} --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias jenkins-dev-hub"
             }else{
-                 rc = bat returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias scratch-org-dev-hub2"
+                 rc = bat returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias jenkins-dev-hub"
             }
             if (rc != 0) { error 'hub org authorization failed' }
 
@@ -49,9 +49,9 @@ node {
         //create scratch org
         stage('Create Test Scratch Org') {
             if(isUnix()){
-                rmsg = sh returnStdout: true, script: "sf org create scratch --target-dev-hub scratch-org-dev-hub2 --set-default --definition-file config/project-scratch-def.json --alias org3 --wait 10 --duration-days 1"
+                rmsg = sh returnStdout: true, script: "sf org create scratch --target-dev-hub jenkins-dev-hub --set-default --definition-file config/project-scratch-def.json --alias org3 --wait 10 --duration-days 1"
             }else{
-                rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub scratch-org-dev-hub2 --set-default --definition-file config/project-scratch-def.json --alias org3 --wait 10 --duration-days 1"
+                rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub jenkins-dev-hub --set-default --definition-file config/project-scratch-def.json --alias org3 --wait 10 --duration-days 1"
             }
 
             println('rmsg : ' + rmsg)
