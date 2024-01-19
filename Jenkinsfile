@@ -49,9 +49,9 @@ node {
         //create scratch org
         stage('Create Test Scratch Org') {
             if(isUnix()){
-                rmsg = sh returnStdout: true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias org2 --wait 10 --duration-days 1"
+                rmsg = sh returnStdout: true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias org3 --wait 10 --duration-days 1"
             }else{
-                rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias org2 --wait 10 --duration-days 1"
+                rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias org3 --wait 10 --duration-days 1"
             }
 
             println('rmsg : ' + rmsg)
@@ -67,9 +67,9 @@ node {
 
         stage('Push To Test Scratch Org') {
             if(isUnix()){
-                rmsg1 = sh returnStdout: true, script: "sf project deploy start --target-org org2";
+                rmsg1 = sh returnStdout: true, script: "sf project deploy start --target-org org3";
             }else{
-                rmsg1 = bat returnStdout: true, script: "sf project deploy start --target-org org2"
+                rmsg1 = bat returnStdout: true, script: "sf project deploy start --target-org org3"
             }
 
             if (rmsg1 != 0) {
