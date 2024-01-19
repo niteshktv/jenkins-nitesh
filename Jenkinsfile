@@ -28,7 +28,7 @@ node {
                 rc = sh returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file ${jwt_key_file} --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias myDevorg"
             }else{
                  rc = bat returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias myDevorg"
-                  bat returnStatus: true, script: "sfdx force:config:set --defaultusername myDevorg"
+                  bat returnStatus: true, script: "sfdx force:config:set --set-default-dev-hub myDevorg"
             }
             if (rc != 0) { error 'hub org authorization failed' }
 
