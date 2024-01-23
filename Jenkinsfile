@@ -37,9 +37,9 @@ node {
 			
 			// need to pull out assigned username
 			if (isUnix()) {
-				rmsg = sh returnStdout: true, script: "sf project deploy start -u ${HUB_ORG}"
+				rmsg = sh returnStdout: true, script: "sf project deploy start -p force-app -u ${HUB_ORG}"
 			}else{
-			   rmsg = bat returnStdout: true, script: "sf project deploy start -u ${HUB_ORG}"
+			   rmsg = bat returnStdout: true, script: "sf project deploy start -p force-app -u ${HUB_ORG}"
 			}
 			  
             printf rmsg
@@ -70,9 +70,9 @@ node {
 
         stage('Push To Test Scratch Org') {
             if(isUnix()){
-                rmsg1 = sh returnStdout: true, script: "sf project deploy start --target-org org4";
+                rmsg1 = sh returnStdout: true, script: "sf project deploy start -p force-app --target-org org4";
             }else{
-                rmsg1 = bat returnStdout: true, script: "sf project deploy start --target-org org4"
+                rmsg1 = bat returnStdout: true, script: "sf project deploy start -p force-app --target-org org4"
             }
 
             if (rmsg1 != 0) {
