@@ -39,7 +39,7 @@ node {
 			if (isUnix()) {
 				rmsg = sh returnStdout: true, script: "sf project deploy start -u ${HUB_ORG}"
 			}else{
-			   rmsg = bat returnStdout: true, script: "sf project deploy start -u ${HUB_ORG}"
+			   rmsg = bat returnStdout: true, script: "sf project deploy start --connected-org nitesh-devhub"
 			}
 			  
             printf rmsg
