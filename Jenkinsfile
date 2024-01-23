@@ -50,9 +50,9 @@ node {
         //create scratch org
         stage('Create Test Scratch Org') {
             if(isUnix()){
-                rmsg = sh returnStdout: true, script: "sf org create scratch --target-dev-hub nitesh-devhub --set-default --definition-file config/project-scratch-def.json --alias org4 --wait 10 --duration-days 1"
+                rmsg = sh returnStdout: true, script: "sf org create scratch --target-dev-hub nitesh-devhub --set-default --definition-file config/project-scratch-def.json --alias org4 --wait 10 --duration-days 1 SF_DISABLE_DNS_CHECK=true"
             }else{
-                rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub nitesh-devhub --set-default --definition-file config/project-scratch-def.json --alias org4 --wait 10 --duration-days 1"
+                rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub nitesh-devhub --set-default --definition-file config/project-scratch-def.json --alias org4 --wait 10 --duration-days 1 SF_DISABLE_DNS_CHECK=true"
             }
 
             println('rmsg : ' + rmsg)
