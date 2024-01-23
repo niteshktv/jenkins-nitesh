@@ -39,7 +39,7 @@ node {
 			if (isUnix()) {
 				rmsg = sh returnStdout: true, script: "sf project deploy start -u ${HUB_ORG}"
 			}else{
-			   rmsg = bat returnStdout: true, script: "sf project deploy start --connected-org nitesh-devhub"
+			   rmsg = bat returnStdout: true, script: "sf project deploy start --target-org nitesh-devhub"
 			}
 			  
             printf rmsg
@@ -70,9 +70,9 @@ node {
 
         stage('Push To Test Scratch Org') {
             if(isUnix()){
-                rmsg1 = sh returnStdout: true, script: "sf project deploy start -p force-app --target-org org4";
+                rmsg1 = sh returnStdout: true, script: "sf project deploy start --target-org org4";
             }else{
-                rmsg1 = bat returnStdout: true, script: "sf project deploy start -p force-app --target-org org4"
+                rmsg1 = bat returnStdout: true, script: "sf project deploy start --target-org org4"
             }
 
             if (rmsg1 != 0) {
