@@ -25,10 +25,10 @@ node {
     withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
         stage('Deploye Code') {
             if (isUnix()) {
-                rc = sh returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file ${jwt_key_file} --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias nitesh-devhub"
+                rc = sh returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file ${jwt_key_file} --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias HubOrg"
             }else{
-                 rc = bat returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias nitesh-devhub"
-                 v1 = bat returnStatus: true, script : "sf config set target-org nitesh-devhub"
+                 rc = bat returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias HubOrg"
+                 v1 = bat returnStatus: true, script : "sf config set target-org HubOrg"
                 
             }
             if (rc != 0) { error 'hub org authorization failed' }
@@ -39,7 +39,7 @@ node {
 			if (isUnix()) {
 				rmsg = sh returnStdout: true, script: "sf project deploy start -u ${HUB_ORG}"
 			}else{
-			   rmsg = bat returnStdout: true, script: "sf project deploy start --target-org nitesh-devhub"
+			   rmsg = bat returnStdout: true, script: "sf project deploy start --target-org HubOrg"
 			}
 			  
             printf rmsg
@@ -51,9 +51,9 @@ node {
         //create scratch org
         stage('Create Test Scratch Org') {
             if(isUnix()){
-                rmsg = sh returnStdout: true, script: "sf org create scratch --target-dev-hub nitesh-devhub --set-default --definition-file config/project-scratch-def.json --alias org4 --wait 10 --duration-days 1 SF_DISABLE_DNS_CHECK=true"
+                rmsg = sh returnStdout: true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias org4 --wait 10 --duration-days 1 SF_DISABLE_DNS_CHECK=true"
             }else{
-                rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub nitesh-devhub --set-default --definition-file config/project-scratch-def.json --alias org4 --wait 10 --duration-days 1 SF_DISABLE_DNS_CHECK=true"
+                rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias org4 --wait 10 --duration-days 1 SF_DISABLE_DNS_CHECK=true"
                 v2 = bat returnStatus: true, script : "sf config set target-org org4"
             }
 
