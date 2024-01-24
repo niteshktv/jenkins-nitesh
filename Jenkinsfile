@@ -23,15 +23,15 @@ node {
     }
 
     withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
-        stage('Clean-Up') {
-            deleteDir()
-        }
+        // stage('Clean-Up') {
+        //     deleteDir()
+        // }
         stage('Deploye Code') {
             if (isUnix()) {
                 rc = sh returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file ${jwt_key_file} --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias HubOrg"
             }else{
                  rc = bat returnStatus: true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias HubOrg"
-                //  v1 = bat returnStatus: true, script : "sf config set target-org HubOrg"
+                //  v1 = bat returnStdout: true, script : "sf config set target-org HubOrg"
                 
             }
             if (rc != 0) { error 'hub org authorization failed' }
@@ -42,9 +42,9 @@ node {
 			if (isUnix()) {
 				rmsg = sh returnStdout: true, script: "sf project deploy start -u ${HUB_ORG}"
 			}else{
-			   rmsg = bat returnStdout: true, script: "sf project deploy start --target-org HubOrg"
+                rmsg = bat returnStdout: true, script: "sfdx force:source:deploy --manifest manifest/package.xml  -u ${HUB_ORG}"
 			}
-			  
+  
             printf rmsg
             println('Hello from a Job DSL script!')
             println(rmsg)
@@ -54,32 +54,30 @@ node {
         //create scratch org
         stage('Create Test Scratch Org') {
             if(isUnix()){
-                rmsg = sh returnStdout: true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias org4 --wait 10 --duration-days 1 SF_DISABLE_DNS_CHECK=true"
+                rmsg = sh returnStdout: true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias Org6 --wait 10 --duration-days 1 SF_DISABLE_DNS_CHECK=true"
             }else{
-                rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias org4 --wait 10 --duration-days 1 SF_DISABLE_DNS_CHECK=true"
-                // v2 = bat returnStatus: true, script : "sf config set target-org org4"
+                rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias Org6 --wait 10 --duration-days 1"
+                v2 = bat returnStdout: true, script : "sf config set target-org Org6"
             }
 
-            println('rmsg : ' + rmsg)
-            
-            if (rmsg != 0) {
-                error 'Salesforce test scratch org creation failed.'
-            }
+            println('rmsg : ' + rmsg);
+        }
 
-            println('rmsg : ' + rmsg)
+        stage('Generate username and password'){
+            rmsg = bat returnStdout: true , script: "sf org generate password --target-org Org6 --length 20"
+        }
+
+        stage('Display user'){
+            rmsg = bat returnStdout: true , script: "sf org display user --target-org Org6"
         }
 
         // Deploy code to scratch org
 
         stage('Push To Test Scratch Org') {
             if(isUnix()){
-                rmsg1 = sh returnStdout: true, script: "sf project deploy start --target-org org4";
+                rmsg1 = sh returnStdout: true, script: "sf project deploy start --target-org Org6";
             }else{
-                rmsg1 = bat returnStdout: true, script: "sf project deploy start --target-org org4"
-            }
-
-            if (rmsg1 != 0) {
-            error 'Salesforce push to test scratch org failed.'
+                rmsg1 = bat returnStdout: true, script: "sf project deploy start --target-org Org6"
             }
         }
     }
