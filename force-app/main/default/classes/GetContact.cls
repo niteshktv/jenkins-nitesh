@@ -1,5 +1,6 @@
 public with sharing class GetContact {
-    public static void getContacts(){
-        system.debug('Get Contacts');
-    }
+  public static String getContacts() {
+    system.debug('Get Contacts');
+    return 'Get Contact';
+  }
 }
