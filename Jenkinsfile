@@ -48,7 +48,7 @@ node {
                 rmsg = bat returnStatus: true, script: "sfdx force:source:deploy --manifest manifest/package.xml  -u ${HUB_ORG}"
 			}
   
-            printf rmsg
+            // printf rmsg
             println('Hello from a Job DSL script!')
             println(rmsg)
         }
