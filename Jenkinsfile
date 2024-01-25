@@ -56,7 +56,7 @@ node {
             if(isUnix()){
                 rmsg = sh returnStdout: true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias Org7 --wait 10 --duration-days 1 SF_DISABLE_DNS_CHECK=true"
             }else{
-                rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias Org7 --wait 10 --duration-days 1"
+                rmsg = bat returnStdout: true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias Org7 --wait 30 --duration-days 1"
                 v2 = bat returnStdout: true, script : "sf config set target-org Org7"
             }
 
