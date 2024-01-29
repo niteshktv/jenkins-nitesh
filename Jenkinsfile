@@ -73,9 +73,9 @@ node {
         throw e
     }finally{
         stage('Run Apex class'){
-            sd = command "sf apex run --target-org ${SCRATCH_ORG_ALIAS}"
+            sd = command "sf apex run --target-org ${SCRATCH_ORG_ALIAS} --file force-app/classes/GetContacts.apex"
             println sd
-            echo 'Successfully deployed'
+        echo 'Successfully deployed'
         }
     }
 }
