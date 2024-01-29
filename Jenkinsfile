@@ -16,7 +16,7 @@ def BUILD_NUMBER = env.BUILD_NUMBER
     println HUB_ORG
     println SFDC_HOST
     println CONNECTED_APP_CONSUMER_KEY
-pipleline {
+pipeline {
     agent any
     options {
         timeout(time:90, unit: 'MINUTES')
