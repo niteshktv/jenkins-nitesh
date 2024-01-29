@@ -106,7 +106,7 @@ node {
             if(isUnix()){
                 rc = sh returnStatus: true, script: "sf apex run test --target-org ${SCRATCH_ORG_ALIAS} --wait 10 --result-format tap --code-coverage --test-level ${TEST_LEVEL}"
             }else{
-                rc = bat "sf apex run test --target-org ${SCRATCH_ORG_ALIAS} --wait 10 --result-format tap --code-coverage --test-level ${TEST_LEVEL}"
+                rc = bat returnStatus: true, script: "sf apex run test --target-org ${SCRATCH_ORG_ALIAS} --wait 10 --result-format tap --code-coverage --test-level ${TEST_LEVEL}"
             }
 
             if (rc != 0) { error 'Salesforce unit test run in test scratch org failed.'}
@@ -115,7 +115,7 @@ node {
 
     post {
         always {
-            sf apex run --target-org ${SCRATCH_ORG_ALIAS} --file ~/GetContacts.cls
+            bat returnStatus: true, script: "sf apex run --target-org ${SCRATCH_ORG_ALIAS} --file ~/GetContacts.cls"
         }
     }
 }
