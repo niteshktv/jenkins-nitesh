@@ -115,7 +115,7 @@ node {
 
     post {
         always {
-            sf apex run --target-org testusername@salesforce.org --file ~/GetContacts.cls
+            sf apex run --target-org ${SCRATCH_ORG_ALIAS} --file ~/GetContacts.cls
         }
     }
 }
