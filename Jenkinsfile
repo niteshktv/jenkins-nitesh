@@ -44,10 +44,11 @@ pipeline {
             stage('Deploye Code') {
                 steps{
                     rc = command "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias HubOrg"
+                    if (rc != 0) { error 'hub org authorization failed' }
+                    println rc
                 //  v1 = bat returnStatus: true, script : "sf config set target-org HubOrg"
                 }
-                if (rc != 0) { error 'hub org authorization failed' }
-                println rc
+                
             }
 
             //create scratch org
@@ -55,25 +56,25 @@ pipeline {
                 steps{
                     rmsg = command "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias ${SCRATCH_ORG_ALIAS} --wait 30 --duration-days 1"
                     v2 = command "sf config set target-org ${SCRATCH_ORG_ALIAS}"
-                }
                 if (rmsg != 0) { error 'Scratch Org creation failed' }
                 println('rmsg : ' + rmsg)
+                }
             }
 
             stage('Generate username and password') {
                 steps{
                    rmsg = command "sf org generate password --target-org ${SCRATCH_ORG_ALIAS} --length 20"
-                }
                 if (rmsg != 0) { error 'Scratch Org username and password generation failed' }
+                }
             }
             
 
             stage('Display user') {
                 steps{
                     rmsg = command "sf org display user --target-org ${SCRATCH_ORG_ALIAS}"
+                if (rmsg != 0) { error 'Scratch Org display user failed' }
                 }
 
-                if (rmsg != 0) { error 'Scratch Org display user failed' }
             }
             
 
@@ -82,18 +83,18 @@ pipeline {
             stage('Push To Test Scratch Org') {
                 steps{
                     rmsg1 = command "sf project deploy start --target-org ${SCRATCH_ORG_ALIAS}"
+                if (rmsg != 0) { error 'Scratch Org deployment failed' }
                 }
 
-                if (rmsg != 0) { error 'Scratch Org deployment failed' }
             }
             
 
             stage('Run Tests In Test Scratch Org') {
                 steps{
                     rc = command "sf apex run test --target-org ${SCRATCH_ORG_ALIAS} --wait 10 --result-format tap --code-coverage --test-level ${TEST_LEVEL}"
+                if (rc != 0) { error 'Salesforce unit test run in test scratch org failed.' }
                 }
 
-                if (rc != 0) { error 'Salesforce unit test run in test scratch org failed.' }
             }
             
     }  
