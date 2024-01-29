@@ -70,7 +70,8 @@ node {
 
         post {
         always {
-            bat returnStatus: true, script: "sf apex run --target-org ${SCRATCH_ORG_ALIAS} --file ~/GetContacts.cls"
+            // bat returnStatus: true, script: "sf apex run --target-org ${SCRATCH_ORG_ALIAS} --file ~/GetContacts.cls"
+            echo "Hello Mohit G"
         }
     }
     }
