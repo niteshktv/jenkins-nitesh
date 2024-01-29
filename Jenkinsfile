@@ -1,23 +1,22 @@
 import groovy.json.JsonSlurperClassic
-    
+    SFDC_HOST = env.SFDC_HOST_DH
+     JWT_KEY_CRED_ID = env.JWT_CRED_ID_DH
+     HUB_ORG = env.HUB_ORG_DH
+     CONNECTED_APP_CONSUMER_KEY = env.CONNECTED_APP_CONSUMER_KEY_DH
+
+
+    println 'KEY IS'
+    println JWT_KEY_CRED_ID
+    println HUB_ORG
+    println SFDC_HOST
+    println CONNECTED_APP_CONSUMER_KEY
 
 pipeline {
     agent any
     
     environment {
-        RUN_ARTIFACT_DIR = "tests/${env.BUILD_NUMBER}"
         SCRATCH_ORG_ALIAS = 'Org9'
         TEST_LEVEL = 'RunLocalTests'
-        SFDC_HOST = env.SFDC_HOST_DH
-        JWT_KEY_CRED_ID = env.JWT_CRED_ID_DH
-        HUB_ORG = env.HUB_ORG_DH
-        CONNECTED_APP_CONSUMER_KEY = env.CONNECTED_APP_CONSUMER_KEY_DH
-
-        // println 'KEY IS'
-        // println JWT_KEY_CRED_ID
-        // println HUB_ORG
-        // println SFDC_HOST
-        // println CONNECTED_APP_CONSUMER_KEY
     }
     
     stages {
