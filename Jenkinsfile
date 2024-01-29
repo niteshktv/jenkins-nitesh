@@ -72,14 +72,10 @@ node {
     }catch(e){
         throw e
     }finally{
+        sd = command "sf apex run --target-org ${SCRATCH_ORG_ALIAS} --file ~/GetContacts.cls"
+        println sd
         echo 'Successfully deployed'
     }
-
-    // post {
-    //     always {
-    //         bat returnStatus: true, script: "sf apex run --target-org ${SCRATCH_ORG_ALIAS} --file ~/GetContacts.cls"
-    //     }
-    // }
 }
 
 def command(script){
