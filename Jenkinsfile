@@ -13,11 +13,11 @@ pipeline {
         HUB_ORG = env.HUB_ORG_DH
         CONNECTED_APP_CONSUMER_KEY = env.CONNECTED_APP_CONSUMER_KEY_DH
 
-        println 'KEY IS'
-        println JWT_KEY_CRED_ID
-        println HUB_ORG
-        println SFDC_HOST
-        println CONNECTED_APP_CONSUMER_KEY
+        // println 'KEY IS'
+        // println JWT_KEY_CRED_ID
+        // println HUB_ORG
+        // println SFDC_HOST
+        // println CONNECTED_APP_CONSUMER_KEY
     }
     
     stages {
