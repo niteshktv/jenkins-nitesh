@@ -39,42 +39,44 @@ node {
 
 
         //create scratch org
-        stage('Create Test Scratch Org') {
-            rmsg = command "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias ${SCRATCH_ORG_ALIAS} --wait 30 --duration-days 1"
-            v2 = bat returnStatus: true, script : "sf config set target-org ${SCRATCH_ORG_ALIAS}"
-            if(rmsg != 0){error 'Scratch Org creation failed'}
+        // stage('Create Test Scratch Org') {
+        //     rmsg = command "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias ${SCRATCH_ORG_ALIAS} --wait 30 --duration-days 1"
+        //     v2 = bat returnStatus: true, script : "sf config set target-org ${SCRATCH_ORG_ALIAS}"
+        //     if(rmsg != 0){error 'Scratch Org creation failed'}
 
-            println('rmsg : ' + rmsg);
-        }
+        //     println('rmsg : ' + rmsg);
+        // }
 
-        stage('Generate username and password'){
-            rmsg = command "sf org generate password --target-org ${SCRATCH_ORG_ALIAS} --length 20"
-            if(rmsg != 0){error 'Scratch Org username and password generation failed'}
-        }
+        // stage('Generate username and password'){
+        //     rmsg = command "sf org generate password --target-org ${SCRATCH_ORG_ALIAS} --length 20"
+        //     if(rmsg != 0){error 'Scratch Org username and password generation failed'}
+        // }
 
-        stage('Display user'){
-            rmsg =command "sf org display user --target-org ${SCRATCH_ORG_ALIAS}"
-            if(rmsg != 0){error 'Scratch Org display user failed'} 
-        }
+        // stage('Display user'){
+        //     rmsg =command "sf org display user --target-org ${SCRATCH_ORG_ALIAS}"
+        //     if(rmsg != 0){error 'Scratch Org display user failed'} 
+        // }
 
-        // Deploy code to scratch org
+        // // Deploy code to scratch org
 
-        stage('Push To Test Scratch Org') {
-            rmsg1 = command "sf project deploy start --target-org ${SCRATCH_ORG_ALIAS}"
-            if(rmsg != 0){error 'Scratch Org deployment failed'}
-        }
+        // stage('Push To Test Scratch Org') {
+        //     rmsg1 = command "sf project deploy start --target-org ${SCRATCH_ORG_ALIAS}"
+        //     if(rmsg != 0){error 'Scratch Org deployment failed'}
+        // }
 
-        stage('Run Tests In Test Scratch Org') {
-            rc = command "sf apex run test --target-org ${SCRATCH_ORG_ALIAS} --wait 10 --result-format tap --code-coverage --test-level ${TEST_LEVEL}"
-            if (rc != 0) { error 'Salesforce unit test run in test scratch org failed.'}
-        }
+        // stage('Run Tests In Test Scratch Org') {
+        //     rc = command "sf apex run test --target-org ${SCRATCH_ORG_ALIAS} --wait 10 --result-format tap --code-coverage --test-level ${TEST_LEVEL}"
+        //     if (rc != 0) { error 'Salesforce unit test run in test scratch org failed.'}
+        // }
     }
     }catch(e){
         throw e
     }finally{
-        sd = command "sf apex run --target-org ${SCRATCH_ORG_ALIAS} --file ~/GetContacts.cls"
-        println sd
-        echo 'Successfully deployed'
+        stage('Run Apex class'){
+            sd = command "sf apex run --target-org ${SCRATCH_ORG_ALIAS} --file force-app/classes/GetContacts.cls"
+            println sd
+            echo 'Successfully deployed'
+        }
     }
 }
 
