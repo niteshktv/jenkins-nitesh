@@ -37,7 +37,7 @@ pipeline {
             }
         }
 
-        withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
+        // withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
             // stage('Clean-Up') {
             //     deleteDir()
             // }
@@ -122,7 +122,7 @@ pipeline {
                 }
             }
         }
-    }
+    // }
 
     post {
         always {
