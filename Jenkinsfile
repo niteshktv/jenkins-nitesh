@@ -11,7 +11,7 @@ node {
     def JWT_KEY_CRED_ID = env.JWT_CRED_ID_DH
     def CONNECTED_APP_CONSUMER_KEY=env.CONNECTED_APP_CONSUMER_KEY_DH
 
-    def SCRATCH_ORG_ALIAS = 'Org8'
+    def SCRATCH_ORG_ALIAS = 'Org9'
     def TEST_LEVEL='RunLocalTests'
 
     println 'KEY IS' 
@@ -110,6 +110,12 @@ node {
             }
 
             if (rc != 0) { error 'Salesforce unit test run in test scratch org failed.'}
+        }
+    }
+
+    post {
+        always {
+            sf apex run --target-org testusername@salesforce.org --file ~/GetContacts.cls
         }
     }
 }
