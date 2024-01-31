@@ -71,7 +71,7 @@ pipeline{
                     script{
                         withCredentials([file(credentialsId: env.JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
                             println('jwt_key_file  ' + jwt_key_file)
-                            rc = bat returnStatus:true, script: 'sfdx force:auth:jwt:grant --client-id env.CONNECTED_APP_CONSUMER_KEY --username env.HUB_ORG --jwt-key-file 36cbf6be-b312-47c5-bfd2-6c438de5438f --set-default-dev-hub --instance-url https://login.salesforce.com --alias HubOrg' 
+                            rc = bat returnStatus:true, script: "sfdx force:auth:jwt:grant --client-id env.CONNECTED_APP_CONSUMER_KEY --username env.HUB_ORG --jwt-key-file ${jwt_key_file} --set-default-dev-hub --instance-url https://login.salesforce.com --alias HubOrg"
 
                             if (rc != 0) { error 'hub org authorization failed' }
 
