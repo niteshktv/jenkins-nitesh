@@ -71,7 +71,7 @@ pipeline{
                     script{
                         withCredentials([file(credentialsId: env.JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
                             println('jwt_key_file  ' + jwt_key_file)
-                            rc = bat returnStatus:true, script: "sfdx force:auth:jwt:grant --client-id env.CONNECTED_APP_CONSUMER_KEY --username env.HUB_ORG --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instance-url ${SFDC_HOST} --alias HubOrg"
+                            rc = bat returnStatus:true, script: "sfdx force:auth:jwt:grant --client-id 3MVG9wt4IL4O5wvKsRFviJzUpyxkk1SBOEJCDgJkfvU7wZ5ZUkz51iMd4jUu72Jo.NqRVZQ8cqagodmY7Mpx. --username myquizapp@trailhead.com --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instance-url ${SFDC_HOST} --alias HubOrg"
 
                             if (rc != 0) { error 'hub org authorization failed' }
 
