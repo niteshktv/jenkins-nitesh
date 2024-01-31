@@ -31,7 +31,7 @@ node {
         //     deleteDir()
         // }
         stage('Authorize Dev Hub') {
-            rc = command 'sfdx force:auth:jwt:grant --client-id $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias HubOrg' 
+            rc = command 'sfdx force:auth:jwt:grant --client-id $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl https://login.salesforce.com --alias HubOrg' 
             if (rc != 0) { error 'hub org authorization failed' }
 
 			println rc
