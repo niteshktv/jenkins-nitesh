@@ -37,7 +37,7 @@ pipeline{
     options {
         timeout(time: 90, unit: "MINUTES")
         disableConcurrentBuilds()
-        buildDiscarder(logRotator(numToKeepStr:getStandardBuildsToKeep()))
+        // buildDiscarder(logRotator(numToKeepStr:getStandardBuildsToKeep()))
     }
 
     parameters {
