@@ -41,7 +41,7 @@ pipeline{
     }
     
     environment {
-        SFDX_USE_GENERIC_UNIX_KEYCHAIN = true
+        // SFDX_USE_GENERIC_UNIX_KEYCHAIN = true
         HUB_ORG='myquizapp@trailhead.com'
         SFDC_HOST = 'https://login.salesforce.com'
         JWT_KEY_CRED_ID = '36cbf6be-b312-47c5-bfd2-6c438de5438f'
@@ -71,7 +71,7 @@ pipeline{
                     script{
                         withCredentials([file(credentialsId: env.JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
                             println('jwt_key_file  ' + jwt_key_file)
-                            rc = bat returnStatus:true, script: "sfdx force:auth:jwt:grant --client-id env.CONNECTED_APP_CONSUMER_KEY --username env.HUB_ORG --jwt-key-file ${jwt_key_file} --set-default-dev-hub --instance-url https://login.salesforce.com --alias HubOrg"
+                            rc = bat returnStatus:true, script: "sfdx force:auth:jwt:grant --client-id env.CONNECTED_APP_CONSUMER_KEY --username env.HUB_ORG --jwt-key-file ${jwt_key_file} --set-default-dev-hub --instance-url ${SFDC_HOST} --alias HubOrg"
 
                             if (rc != 0) { error 'hub org authorization failed' }
 
