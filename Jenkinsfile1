@@ -61,7 +61,7 @@ pipeline{
                 script{
                     script{
                         withCredentials([file(credentialsId: env.JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
-                            rc = bat 'sfdx force:auth:jwt:grant --client-id env.CONNECTED_APP_CONSUMER_KEY --username env.HUB_ORG --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl env.SFDC_HOST --alias HubOrg' 
+                            rc = bat 'sfdx force:auth:jwt:grant --client-id env.CONNECTED_APP_CONSUMER_KEY --username env.HUB_ORG --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl https://login.salesforce.com --alias HubOrg' 
                             if (rc != 0) { error 'hub org authorization failed' }
 
 			                println rc
@@ -73,13 +73,13 @@ pipeline{
 
         stage('Create Scratch Org'){
             steps{
-                createSfdxCommands('sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias ${SCRATCH_ORG_ALIAS} --wait 30 --duration-days 1')
+                createSfdxCommands('sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias env.SCRATCH_ORG_ALIAS --wait 30 --duration-days 1')
             }
         }
 
         stage('Generate username and password'){
             steps{
-                createSfdxCommands('sf org generate password --target-org ${SCRATCH_ORG_ALIAS} --length 20')
+                createSfdxCommands('sf org generate password --target-org env.SCRATCH_ORG_ALIAS --length 20')
             }
         }
     }
