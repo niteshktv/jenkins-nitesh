@@ -58,10 +58,10 @@ pipeline{
     stages{
         stage('Test'){
             steps{
-                println('connected key' + env.CONNECTED_APP_CONSUMER_KEY)
-                            println('Host' + env.SFDC_HOST);
-                            println('Hub Org' + env.HUB_ORG)
-                            println('JWT ID' + env.JWT_KEY_CRED_ID)
+                println('connected key ' + env.CONNECTED_APP_CONSUMER_KEY)
+                            println('Host ' + env.SFDC_HOST);
+                            println('Hub Org ' + env.HUB_ORG)
+                            println('JWT ID ' + env.JWT_KEY_CRED_ID)
             }
         }
         stage('Authorize Dev hub'){
@@ -69,7 +69,8 @@ pipeline{
                 script{
                     script{
                         withCredentials([file(credentialsId: env.JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
-                            rc = bat returnStatus:true, script: 'sfdx force:auth:jwt:grant --client-id env.CONNECTED_APP_CONSUMER_KEY --username env.HUB_ORG --jwt-key-file $jwt_key_file --set-default-dev-hub --instanceurl https://login.salesforce.com --alias HubOrg' 
+                            println('jwt_key_file  ' + jwt_key_file)
+                            rc = bat returnStatus:true, script: 'sfdx force:auth:jwt:grant --client-id env.CONNECTED_APP_CONSUMER_KEY --username env.HUB_ORG --jwt-key-file $jwt_key_file --set-default-dev-hub --instance-url env.SFDC_HOST --alias HubOrg' 
 
                             if (rc != 0) { error 'hub org authorization failed' }
 
