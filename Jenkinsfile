@@ -31,14 +31,14 @@ node {
         //     deleteDir()
         // }
         stage('Authorize Dev Hub') {
-            rc = command 'sfdx force:auth:jwt:grant --client-id $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl $SFDC_HOST --alias HubOrg' 
+            rc = command 'sfdx force:auth:jwt:grant --client-id $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl ${SFDC_HOST} --alias HubOrg' 
             if (rc != 0) { error 'hub org authorization failed' }
 
 			println rc
         }
 
 
-        //create scratch org
+        // create scratch org
         stage('Create Test Scratch Org') {
             rmsg = command "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias ${SCRATCH_ORG_ALIAS} --wait 30 --duration-days 1"
             v2 = bat returnStatus: true, script : "sf config set target-org ${SCRATCH_ORG_ALIAS}"
