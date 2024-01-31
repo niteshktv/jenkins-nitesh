@@ -39,6 +39,13 @@ pipeline{
         disableConcurrentBuilds()
         // buildDiscarder(logRotator(numToKeepStr:getStandardBuildsToKeep()))
     }
+    
+    environment {
+        HUB_ORG=env.HUB_ORG_DH
+        SFDC_HOST = env.SFDC_HOST_DH
+        JWT_KEY_CRED_ID = env.JWT_CRED_ID_DH
+        CONNECTED_APP_CONSUMER_KEY=env.CONNECTED_APP_CONSUMER_KEY_DH
+    }
 
     parameters {
         string(name: 'DEFAULT_BRANCH', defaultValue: 'Integration', description: 'Defines Default branch')
