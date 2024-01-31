@@ -41,6 +41,7 @@ pipeline{
     }
     
     environment {
+        SFDX_USE_GENERIC_UNIX_KEYCHAIN = true
         HUB_ORG='myquizapp@trailhead.com'
         SFDC_HOST = 'https://login.salesforce.com'
         JWT_KEY_CRED_ID = '36cbf6be-b312-47c5-bfd2-6c438de5438f'
