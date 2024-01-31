@@ -11,16 +11,16 @@ def SFDC_USERNAME
 // def TEST_LEVEL='RunLocalTests'
 
 
-def authenticateDevHub(){
-    script{
-        withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
-            rc = command 'sfdx force:auth:jwt:grant --client-id $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl $SFDC_HOST --alias HubOrg' 
-            if (rc != 0) { error 'hub org authorization failed' }
+// def authenticateDevHub(){
+//     script{
+//         withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
+//             rc = command 'sfdx force:auth:jwt:grant --client-id $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl $SFDC_HOST --alias HubOrg' 
+//             if (rc != 0) { error 'hub org authorization failed' }
 
-			println rc
-        }
-    }
-}
+// 			println rc
+//         }
+//     }
+// }
 def createSfdxCommands(scriptName){
     script{
         if(isUnix()){
@@ -58,7 +58,16 @@ pipeline{
     stages{
         stage('Authorize Dev hub'){
             steps{
-                authenticateDevHub()
+                script{
+                    script{
+                        withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
+                            rc = command 'sfdx force:auth:jwt:grant --client-id env.CONNECTED_APP_CONSUMER_KEY --username env.HUB_ORG --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl env.SFDC_HOST --alias HubOrg' 
+                            if (rc != 0) { error 'hub org authorization failed' }
+
+			                println rc
+                        }
+                    }
+                }
             }
         }
 
