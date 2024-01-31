@@ -1,0 +1,68 @@
+def BUILD_NUMBER=env.BUILD_NUMBER
+def RUN_ARTIFACT_DIR="tests/${BUILD_NUMBER}"
+def SFDC_USERNAME
+
+def HUB_ORG=env.HUB_ORG_DH
+def SFDC_HOST = env.SFDC_HOST_DH
+def JWT_KEY_CRED_ID = env.JWT_CRED_ID_DH
+def CONNECTED_APP_CONSUMER_KEY=env.CONNECTED_APP_CONSUMER_KEY_DH
+
+def SCRATCH_ORG_ALIAS = 'Org11'
+def TEST_LEVEL='RunLocalTests'
+
+
+def authenticateDevHub(){
+    script{
+        withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
+            rc = command 'sfdx force:auth:jwt:grant --client-id $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instanceurl $SFDC_HOST --alias HubOrg' 
+            if (rc != 0) { error 'hub org authorization failed' }
+
+			println rc
+        }
+    }
+}
+def createSfdxCommands(scriptName){
+    script{
+        if(isUnix()){
+            rc = sh returnStatus: true, script: scriptName
+        }else{
+            rc = bat returnStatus:true , script: scriptName
+        }
+    }
+}
+
+pipeline{
+    agent any 
+
+    options {
+        timeout(time: 90, unit: "MINUTES")
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr:getStandardBuildsToKeep()))
+    }
+
+    parameters {
+        string(name: 'DEFAULT_BRANCH', defaultValue: 'Integration', description: 'Defines Default branch')
+        string(name: 'RELEASE_BRANCH', defaultValue: 'Release', description: 'Defines Release branch')
+        string(name: 'MASTER_BRANCH', defaultValue: 'master', description: 'Defines Master branch')
+    }
+
+    stages{
+        stage('Authorize Dev hub'){
+            steps{
+                authenticateDevHub()
+            }
+        }
+
+        stage('Create Scratch Org'){
+            steps{
+                createSfdxCommands('sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias ${SCRATCH_ORG_ALIAS} --wait 30 --duration-days 1')
+            }
+        }
+
+        stage('Generate username and password'){
+            steps{
+                createSfdxCommands('sf org generate password --target-org ${SCRATCH_ORG_ALIAS} --length 20')
+            }
+        }
+    }
+}
