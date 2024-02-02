@@ -46,7 +46,7 @@ pipeline{
         SFDC_HOST = 'https://login.salesforce.com'
         JWT_KEY_CRED_ID = '36cbf6be-b312-47c5-bfd2-6c438de5438f'
         CONNECTED_APP_CONSUMER_KEY='3MVG9wt4IL4O5wvKsRFviJzUpyxkk1SBOEJCDgJkfvU7wZ5ZUkz51iMd4jUu72Jo.NqRVZQ8cqagodmY7Mpx.'
-        SCRATCH_ORG_ALIAS = 'Org13'
+        SCRATCH_ORG_ALIAS = 'Org12'
         TEST_LEVEL='RunLocalTests'
     }
 
@@ -67,53 +67,53 @@ pipeline{
         }
         stage('Authorize Dev hub'){
             steps{
-                    script{
-                        withCredentials([file(credentialsId: env.JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
-                            println('jwt_key_file  ' + jwt_key_file)
-                            rc = bat returnStatus:true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instance-url ${SFDC_HOST} --alias HubOrg"
-                            bat returnStatus:true, script: "sfdx force:config:set defaultusername=${HUB_ORG}"
-                            // bat returnStatus:true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias ${SCRATCH_ORG_ALIAS} --wait 30 --duration-days 1"
-                            // bat returnStatus:true, script: "sf org generate password --target-org ${SCRATCH_ORG_ALIAS} --length 20"
-                            // bat returnStatus:true, script: "sf org display user --target-org ${SCRATCH_ORG_ALIAS}"
-                            // bat returnStatus:true, script: "sf project deploy start --target-org ${SCRATCH_ORG_ALIAS}"
-                            // bat returnStatus:true, script: "sf apex run test --target-org ${SCRATCH_ORG_ALIAS} --wait 10 --result-format tap --code-coverage --test-level ${TEST_LEVEL}"
-                            if (rc != 0) { error 'hub org authorization failed' }
+                script{
+                    withCredentials([file(credentialsId: env.JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
+                        
+                        rc = bat returnStatus:true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instance-url ${SFDC_HOST} --alias HubOrg"
 
-			                println rc
-                        }
+                        bat returnStatus:true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias ${SCRATCH_ORG_ALIAS} --wait 30 --duration-days 1"
+                        bat returnStatus:true, script: "sf org generate password --target-org ${SCRATCH_ORG_ALIAS} --length 20"
+                        bat returnStatus:true, script: "sf org display user --target-org ${SCRATCH_ORG_ALIAS}"
+                        bat returnStatus:true, script: "sf project deploy start --target-org ${SCRATCH_ORG_ALIAS}"
+                        bat returnStatus:true, script: "sf apex run test --target-org ${SCRATCH_ORG_ALIAS} --wait 10 --result-format tap --code-coverage --test-level ${TEST_LEVEL}"
+                        if (rc != 0) { error 'hub org authorization failed' }
+
+			            println rc
                     }
+                }
                 
             }
         }
 
-        stage('Create Scratch Org'){
-            steps{
-                createSfdxCommands("sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias ${SCRATCH_ORG_ALIAS} --wait 30 --duration-days 1")
-            }
-        }
+        // stage('Create Scratch Org'){
+        //     steps{
+        //         createSfdxCommands("sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias ${SCRATCH_ORG_ALIAS} --wait 30 --duration-days 1")
+        //     }
+        // }
 
-        stage('Generate username and password'){
-            steps{
-                createSfdxCommands("sf org generate password --target-org ${SCRATCH_ORG_ALIAS} --length 20")
-            }
-        }
+        // stage('Generate username and password'){
+        //     steps{
+        //         createSfdxCommands("sf org generate password --target-org ${SCRATCH_ORG_ALIAS} --length 20")
+        //     }
+        // }
 
-        stage('Display user'){
-            steps{
-                createSfdxCommands("sf org display user --target-org ${SCRATCH_ORG_ALIAS}")
-            }
-        }
+        // stage('Display user'){
+        //     steps{
+        //         createSfdxCommands("sf org display user --target-org ${SCRATCH_ORG_ALIAS}")
+        //     }
+        // }
 
-        stage('Push To Test Scratch Org'){
-            steps{
-                createSfdxCommands("sf project deploy start --target-org ${SCRATCH_ORG_ALIAS}")
-            }
-        }
+        // stage('Push To Test Scratch Org'){
+        //     steps{
+        //         createSfdxCommands("sf project deploy start --target-org ${SCRATCH_ORG_ALIAS}")
+        //     }
+        // }
 
-        stage('Run Tests In Test Scratch Org'){
-            steps{
-                createSfdxCommands("sf apex run test --target-org ${SCRATCH_ORG_ALIAS} --wait 10 --result-format tap --code-coverage --test-level ${TEST_LEVEL}")
-            }
-        }
+        // stage('Run Tests In Test Scratch Org'){
+        //     steps{
+        //         createSfdxCommands("sf apex run test --target-org ${SCRATCH_ORG_ALIAS} --wait 10 --result-format tap --code-coverage --test-level ${TEST_LEVEL}")
+        //     }
+        // }
     }
 }
