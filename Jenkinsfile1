@@ -46,7 +46,7 @@ pipeline{
         SFDC_HOST = 'https://login.salesforce.com'
         JWT_KEY_CRED_ID = '36cbf6be-b312-47c5-bfd2-6c438de5438f'
         CONNECTED_APP_CONSUMER_KEY='3MVG9wt4IL4O5wvKsRFviJzUpyxkk1SBOEJCDgJkfvU7wZ5ZUkz51iMd4jUu72Jo.NqRVZQ8cqagodmY7Mpx.'
-        SCRATCH_ORG_ALIAS = 'Org12'
+        SCRATCH_ORG_ALIAS = 'Org14'
         TEST_LEVEL='RunLocalTests'
     }
 
@@ -57,19 +57,19 @@ pipeline{
     }
 
     stages{
-        stage('Test'){
-            steps{
-                println('connected key ' + env.CONNECTED_APP_CONSUMER_KEY)
-                            println('Host ' + env.SFDC_HOST);
-                            println('Hub Org ' + env.HUB_ORG)
-                            println('JWT ID ' + env.JWT_KEY_CRED_ID)
-            }
-        }
+        // stage('Test'){
+        //     steps{
+        //         println('connected key ' + env.CONNECTED_APP_CONSUMER_KEY)
+        //                     println('Host ' + env.SFDC_HOST);
+        //                     println('Hub Org ' + env.HUB_ORG)
+        //                     println('JWT ID ' + env.JWT_KEY_CRED_ID)
+        //     }
+        // }
         stage('Authorize Dev hub'){
             steps{
                 script{
                     withCredentials([file(credentialsId: env.JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
-                        
+
                         rc = bat returnStatus:true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instance-url ${SFDC_HOST} --alias HubOrg"
 
                         bat returnStatus:true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias ${SCRATCH_ORG_ALIAS} --wait 30 --duration-days 1"
@@ -77,6 +77,15 @@ pipeline{
                         bat returnStatus:true, script: "sf org display user --target-org ${SCRATCH_ORG_ALIAS}"
                         bat returnStatus:true, script: "sf project deploy start --target-org ${SCRATCH_ORG_ALIAS}"
                         bat returnStatus:true, script: "sf apex run test --target-org ${SCRATCH_ORG_ALIAS} --wait 10 --result-format tap --code-coverage --test-level ${TEST_LEVEL}"
+
+                        publishHTML target: [
+                            allowMissing: false,
+                            alwaysLinkToLastBuild: false,
+                            keepAll: true,
+                            reportDir: 'coverage',
+                            reportFiles: 'index.html',
+                            reportName: 'RCov Report'
+                        ]
                         if (rc != 0) { error 'hub org authorization failed' }
 
 			            println rc
@@ -115,5 +124,11 @@ pipeline{
         //         createSfdxCommands("sf apex run test --target-org ${SCRATCH_ORG_ALIAS} --wait 10 --result-format tap --code-coverage --test-level ${TEST_LEVEL}")
         //     }
         // }
+    }
+
+    post { 
+        always { 
+            echo 'I will always say Hello again!'
+        }
     }
 }
