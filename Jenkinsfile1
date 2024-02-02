@@ -46,7 +46,7 @@ pipeline{
         SFDC_HOST = 'https://login.salesforce.com'
         JWT_KEY_CRED_ID = '36cbf6be-b312-47c5-bfd2-6c438de5438f'
         CONNECTED_APP_CONSUMER_KEY='3MVG9wt4IL4O5wvKsRFviJzUpyxkk1SBOEJCDgJkfvU7wZ5ZUkz51iMd4jUu72Jo.NqRVZQ8cqagodmY7Mpx.'
-        SCRATCH_ORG_ALIAS = 'Org12'
+        SCRATCH_ORG_ALIAS = 'Org13'
         TEST_LEVEL='RunLocalTests'
     }
 
