@@ -71,7 +71,7 @@ pipeline{
                         withCredentials([file(credentialsId: env.JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
                             println('jwt_key_file  ' + jwt_key_file)
                             rc = bat returnStatus:true, script: "sfdx force:auth:jwt:grant --client-id ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwt-key-file \"${jwt_key_file}\" --set-default-dev-hub --instance-url ${SFDC_HOST} --alias HubOrg"
-
+                            bat returnStatus:true, script: "sfdx force:config:set defaultusername=${HUB_ORG}"
                             // bat returnStatus:true, script: "sf org create scratch --target-dev-hub HubOrg --set-default --definition-file config/project-scratch-def.json --alias ${SCRATCH_ORG_ALIAS} --wait 30 --duration-days 1"
                             // bat returnStatus:true, script: "sf org generate password --target-org ${SCRATCH_ORG_ALIAS} --length 20"
                             // bat returnStatus:true, script: "sf org display user --target-org ${SCRATCH_ORG_ALIAS}"
