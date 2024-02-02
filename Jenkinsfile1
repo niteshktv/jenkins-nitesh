@@ -78,14 +78,6 @@ pipeline{
                         bat returnStatus:true, script: "sf project deploy start --target-org ${SCRATCH_ORG_ALIAS}"
                         bat returnStatus:true, script: "sf apex run test --target-org ${SCRATCH_ORG_ALIAS} --wait 10 --result-format tap --code-coverage --test-level ${TEST_LEVEL}"
 
-                        publishHTML target: [
-                            allowMissing: false,
-                            alwaysLinkToLastBuild: false,
-                            keepAll: true,
-                            reportDir: 'coverage',
-                            reportFiles: 'index.html',
-                            reportName: 'RCov Report'
-                        ]
                         if (rc != 0) { error 'hub org authorization failed' }
 
 			            println rc
